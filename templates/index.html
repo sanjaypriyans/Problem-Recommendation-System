@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Problem Recommendation</title>
+    <link rel="stylesheet" href="/static/style.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="site-header">
+        <div class="container">
+            <h1>Problem Recommendation</h1>
+        </div>
+    </header>
+    <main class="container">
+        <section class="search-section">
+            <form action="/results" method="post" id="search-form">
+                <div style="position: relative; width: 100%; margin-bottom: 20px;">
+                    <div class="search-input-wrapper">
+                        <input id="query-input" list="filter-list" type="text" name="query" placeholder="e.g. easy arrays, amazon questions" required autocomplete="off" />
+                        <datalist id="filter-list">
+                            {% for col, vals in filter_options.items() %}
+                                {% for v in vals %}
+                                    <option value="{{ v }}"></option>
+                                {% endfor %}
+                            {% endfor %}
+                        </datalist>
+                        <button type="submit"><span class="btn-text">Search</span></button>
+                    </div>
+                    <div class="suggestions" id="suggestions"></div>
+                </div>
+                <details class="filters-collapsible">
+                    <summary>Advanced Filters</summary>
+                    <div class="filters">
+                        {% for col, vals in filter_options.items() %}
+                            <div>
+                                <label>{{ col|capitalize }}:</label>
+                                <select name="{{ col }}" multiple size="{{ vals|length if vals|length<5 else 5 }}">
+                                    {% for v in vals %}
+                                        <option value="{{ v }}">{{ v }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </details>
+            </form>
+        </section>
+
+        {% if history %}
+        <section class="history">
+            <h2>Recent Searches</h2>
+            <ul>
+                {% for q in history %}
+                    <li><a href="/results?query={{ q }}">{{ q }}</a></li>
+                {% endfor %}
+            </ul>
+        </section>
+        {% endif %}
+
+        {% if saved %}
+        <section class="saved">
+            <h2>Saved Queries</h2>
+            <ul>
+                {% for q in saved %}
+                    <li><a href="/results?query={{ q }}">{{ q }}</a></li>
+                {% endfor %}
+            </ul>
+        </section>
+        {% endif %}
+    </main>
+    <script>
+        // live suggestion of known topics (if available) as the user types
+        const topicList = {{ filter_options.get('topic', [])|tojson }};
+        const input = document.getElementById('query-input');
+        const sugContainer = document.getElementById('suggestions');
+        input.addEventListener('input', () => {
+            const text = input.value.toLowerCase();
+            const matches = topicList.filter(t => t.toLowerCase().includes(text) && text.length>0);
+            sugContainer.innerHTML = '';
+            if(matches.length) {
+                matches.slice(0,5).forEach(m => {
+                    const div = document.createElement('div');
+                    div.className = 'suggestion-item';
+                    div.textContent = m;
+                    div.addEventListener('click', () => { input.value = m; sugContainer.innerHTML = ''; });
+                    sugContainer.appendChild(div);
+                });
+            }
+        });
+        document.addEventListener('click', e => {
+            if (!sugContainer.contains(e.target) && e.target !== input) {
+                sugContainer.innerHTML = '';
+            }
+        });
+    </script>
+    <footer class="site-footer">
+        <div class="container">
+            <p>&copy; 2026 Problem Recommendation</p>
+        </div>
+    </footer>
+</body>
+</html>

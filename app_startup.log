@@ -1,0 +1,26 @@
+Traceback (most recent call last):
+  File "D:\Problem Recommendation\project\app.py", line 3, in <module>
+    from nlp.recommendation import ProblemRecommender
+  File "D:\Problem Recommendation\project\nlp\recommendation.py", line 2, in <module>
+    from sentence_transformers import SentenceTransformer
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python310\lib\site-packages\sentence_transformers\__init__.py", line 10, in <module>
+    from sentence_transformers.backend import (
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python310\lib\site-packages\sentence_transformers\backend\__init__.py", line 3, in <module>
+    from .load import load_onnx_model, load_openvino_model
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python310\lib\site-packages\sentence_transformers\backend\load.py", line 7, in <module>
+    from transformers.configuration_utils import PretrainedConfig
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python310\lib\site-packages\transformers\__init__.py", line 27, in <module>
+    from . import dependency_versions_check
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python310\lib\site-packages\transformers\dependency_versions_check.py", line 16, in <module>
+    from .utils.versions import require_version, require_version_core
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python310\lib\site-packages\transformers\utils\__init__.py", line 24, in <module>
+    from .auto_docstring import (
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python310\lib\site-packages\transformers\utils\auto_docstring.py", line 30, in <module>
+    from .generic import ModelOutput
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python310\lib\site-packages\transformers\utils\generic.py", line 51, in <module>
+    import torch
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python310\lib\site-packages\torch\__init__.py", line 280, in <module>
+    _load_dll_libraries()
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python310\lib\site-packages\torch\__init__.py", line 263, in _load_dll_libraries
+    raise err
+OSError: [WinError 1114] A dynamic link library (DLL) initialization routine failed. Error loading "C:\Users\HP\AppData\Local\Programs\Python\Python310\lib\site-packages\torch\lib\c10.dll" or one of its dependencies.

@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Search Results</title>
+    <link rel="stylesheet" href="/static/style.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="site-header">
+        <div class="container">
+            <h1>Problem Recommendation</h1>
+            <nav><a class="btn secondary" href="/">Home</a></nav>
+        </div>
+    </header>
+    <main class="container">
+        <h2>Results for "<span class="query">{{ query }}</span>"</h2>
+        <div class="attributes">
+            <p><strong>Topic:</strong> {% if topic %}{% if topic is iterable and not topic|string %}{{ topic|join(', ') }}{% else %}{{ topic }}{% endif %}{% else %}None{% endif %}</p>
+            <p><strong>Difficulty:</strong> {% if difficulty %}{% if difficulty is iterable and not difficulty|string %}{{ difficulty|join(', ') }}{% else %}{{ difficulty }}{% endif %}{% else %}None{% endif %}</p>
+        </div>
+
+        <section class="results-card">
+            <h3>Filtered Problems</h3>
+            {% if filtered_list %}
+                <ol class="problem-list">
+                    {% for p in filtered_list %}
+                        <li class="problem-item">
+                            <div class="problem-header">
+                                {% if p.get('url') %}
+                                    <a href="{{ p.get('url') }}" target="_blank">{{ p.get('problem','Unknown') }}</a>
+                                {% else %}
+                                    {{ p.get('problem','Unknown') }}
+                                {% endif %}
+                            </div>
+                            
+                            <div class="problem-badges">
+                                {% if p.get('difficulty') %}
+                                    <span class="badge difficulty">{{ p.get('difficulty') }}</span>
+                                {% endif %}
+                                {% if p.get('topic') %}
+                                    <span class="badge topic">{{ p.get('topic') }}</span>
+                                {% endif %}
+                                {% if p.get('company') and p.get('company')|string != 'nan' %}
+                                    <span class="badge company">{{ p.get('company') }}</span>
+                                {% endif %}
+                                {% if p.get('pattern') and p.get('pattern')|string != 'nan' %}
+                                    <span class="badge pattern">{{ p.get('pattern') }}</span>
+                                {% endif %}
+                            </div>
+
+                            {% if (p.get('description') and p.get('description')|string != 'nan') or (p.get('solution_approach') and p.get('solution_approach')|string != 'nan') %}
+                            <details class="problem-details">
+                                <summary>View Details & Approach</summary>
+                                <div class="problem-details-content">
+                                    {% if p.get('description') and p.get('description')|string != 'nan' %}
+                                    <p><strong>Description:</strong> {{ p.get('description') }}</p>
+                                    {% endif %}
+                                    
+                                    {% if p.get('solution_approach') and p.get('solution_approach')|string != 'nan' %}
+                                    <p><strong>Approach:</strong> {{ p.get('solution_approach') }}</p>
+                                    {% endif %}
+                                    
+                                    <div class="complexity-row">
+                                        {% if p.get('time_complexity') and p.get('time_complexity')|string != 'nan' %}
+                                        <span>Time: {{ p.get('time_complexity') }}</span>
+                                        {% endif %}
+                                        {% if p.get('space_complexity') and p.get('space_complexity')|string != 'nan' %}
+                                        <span>Space: {{ p.get('space_complexity') }}</span>
+                                        {% endif %}
+                                    </div>
+                                    
+                                    {% if p.get('notes') and p.get('notes')|string != 'nan' %}
+                                    <p class="note-text"><strong>Note:</strong> {{ p.get('notes') }}</p>
+                                    {% endif %}
+                                </div>
+                            </details>
+                            {% endif %}
+                        </li>
+                    {% endfor %}
+                </ol>
+            {% else %}
+                <p>No problems matched the filters.</p>
+            {% endif %}
+        </section>
+
+        <section class="results-card">
+            <h3>Semantic Recommendations</h3>
+            {% if semantic %}
+            <ol>
+                {% for p in semantic %}
+                    <li>
+                        {% if p.get('url') %}
+                            <a href="{{ p.get('url') }}" target="_blank">{{ p.get('problem','Unknown') }}</a>
+                        {% else %}
+                            {{ p.get('problem','Unknown') }}
+                        {% endif %}
+                        {% if p.get('difficulty') %}
+                            <span class="badge difficulty">{{ p.get('difficulty') }}</span>
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            </ol>
+            {% else %}
+                <p>No semantic matches available.</p>
+            {% endif %}
+        </section>
+        {% if extra %}
+        <section class="results-card">
+            <h3>You might also like</h3>
+            <ol>
+                {% for p in extra %}
+                    <li>
+                        {% if p.get('url') %}
+                            <a href="{{ p.get('url') }}" target="_blank">{{ p.get('problem','Unknown') }}</a>
+                        {% else %}
+                            {{ p.get('problem','Unknown') }}
+                        {% endif %}
+                        {% if p.get('difficulty') %}
+                            <span class="badge difficulty">{{ p.get('difficulty') }}</span>
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            </ol>
+        </section>
+        {% endif %}
+
+        <div class="actions">
+            <a class="btn secondary" href="/">New Search</a>
+            <form action="/save" method="post" style="display:inline-block; margin-left:10px;">
+                <input type="hidden" name="query" value="{{ query }}" />
+                <button class="btn" type="submit">Save This Query</button>
+            </form>
+        </div>
+    </main>
+    <footer class="site-footer">
+        <div class="container">
+            <p>&copy; 2026 Problem Recommendation</p>
+        </div>
+    </footer>
+</body>
+</html>
